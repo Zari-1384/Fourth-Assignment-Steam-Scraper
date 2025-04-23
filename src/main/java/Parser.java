@@ -11,38 +11,41 @@ public class Parser {
 
     public List<Game> sortByName(){
         List<Game> sortedByName = new ArrayList<>(games);
-        // Sort games alphabetically (least)
-        //TODO
+        sortedByName.sort(Comparator.comparing(Game::getName));
         return  sortedByName;
     }
 
     public List<Game> sortByRating(){
         List<Game> sortedByRating = new ArrayList<>(games);
-        // Sort games by rating (most)
-        //TODO
+        sortedByRating.sort(Comparator.comparing(Game::getRating).reversed());
         return sortedByRating;
     }
 
     public List<Game> sortByPrice(){
         List<Game> sortedByPrice = new ArrayList<>(games);
-        // Sort games by price (most)
-        //TODO
+        sortedByPrice.sort(Comparator.comparing(Game::getPrice).reversed());
         return sortedByPrice;
     }
 
     public void setUp() throws IOException {
+        File html = new File("src/Resources/Video_Games.html");
+        Document document = Jsoup.parse(html, "UTF-8");
 
-        //Parse the HTML file using Jsoup
-        //TODO
+        Elements AllElements = document.select(".game");
 
-        // Extract data from the HTML
-        //TODO
+        List<Element> chosenElements = AllElements.subList(0, 100);
 
-        // Iterate through each Game div to extract Game data
-        //TODO
+        for(Element element : chosenElements)
+        {
+            String title = element.select(".game-name").text();
+            double rating = Double.parseDouble(element.select(".game-rating").text().split("/")[0]);
+            int price = Integer.parseInt(element.select(".game-price").text().replace("€","").trim());
+            Game game = new Game(title, rating, price);
+            games.add(game);
+        }
     }
 
     public static void main(String[] args) {
-        //you can test your code here before you run the unit tests
+        System.out.println(games);
     }
 }
